@@ -1,6 +1,4 @@
-//create autocomplete widgets with a configuration object passed as an argument
-createAutoComplete({
-    rootElement: document.querySelector('.autocomplete'),
+const autoCompleteConfig = {
     renderOption(movie) {
         const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster; //checking if any movie poster is available or not
         return `
@@ -29,8 +27,17 @@ createAutoComplete({
         }
         return response.data.Search;
     }
-});
+};
 
+//create autocomplete widgets with a configuration object passed as an argument
+createAutoComplete({
+    ...autoCompleteConfig,
+    rootElement: document.querySelector('#left-autocomplete')
+});
+createAutoComplete({
+    ...autoCompleteConfig,
+    rootElement: document.querySelector('#right-autocomplete')
+});
 // send a followup request to the API and get details for the corresponding movie 
 const onMovieSelect = async movie => {
     const response = await axios.get("http://www.omdbapi.com/", {
