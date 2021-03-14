@@ -1,9 +1,9 @@
 const createAutoComplete = ({
-    rootElement, 
     renderOption, 
     onOptionSelect, 
     inputValue,
-    fetchData
+    fetchData,
+    rootElement
 }) => {
     //HTML for autocomplete dropdown
     rootElement.innerHTML = `
@@ -44,7 +44,7 @@ const createAutoComplete = ({
             option.addEventListener('click', () => {
                 dropdown.classList.remove('is-active');
                 inputElement.value = inputValue(item);
-                onOptionSelect(item);
+                onOptionSelect(item); //onOptionSelect takes the item and helps send a follow-up request with that item
             });
         }
     }

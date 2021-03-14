@@ -7,9 +7,6 @@ const autoCompleteConfig = {
             <span>&nbsp(${movie.Year})</span>
         `;
     },
-    onOptionSelect(movie) {
-        onMovieSelect(movie);
-    },
     inputValue(movie) {
         return movie.Title;
     },
@@ -29,24 +26,37 @@ const autoCompleteConfig = {
     }
 };
 
-//create autocomplete widgets with a configuration object passed as an argument
+// create autocomplete widgets with a configuration object passed as an argument
+
+// left widget
 createAutoComplete({
-    ...autoCompleteConfig,
-    rootElement: document.querySelector('#left-autocomplete')
+    ...autoCompleteConfig, //extracting configurations using spread
+    rootElement: document.querySelector('#left-autocomplete'),
+    onOptionSelect(movie) {
+        document.querySelector('.tutorial').classList.add('is-hidden');  //hides the tutorial when an option is selected
+        onMovieSelect(movie, document.querySelector('#left-summary')); //second param determines where the summary should be rendered to
+    }
 });
+
+// right widget
 createAutoComplete({
-    ...autoCompleteConfig,
-    rootElement: document.querySelector('#right-autocomplete')
+    ...autoCompleteConfig, //extracting configurations using spread
+    rootElement: document.querySelector('#right-autocomplete'),
+    onOptionSelect(movie) {
+        document.querySelector('.tutorial').classList.add('is-hidden');  //hides the tutorial when an option is selected
+        onMovieSelect(movie, document.querySelector('#right-summary'));  //second param determines where the summary should be rendered to
+    },
 });
+
 // send a followup request to the API and get details for the corresponding movie 
-const onMovieSelect = async movie => {
+const onMovieSelect = async (movie, summaryElement) => {
     const response = await axios.get("http://www.omdbapi.com/", {
         params: {
             apikey: "529ca8bc",
             i: movie.imdbID
         }
     });
-    document.querySelector('#summary').innerHTML = movieTemplate(response.data);
+    summaryElement.innerHTML = movieTemplate(response.data);
 };
 
 //HTML template for showing detailed info for any movie
