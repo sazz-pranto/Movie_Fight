@@ -34,7 +34,7 @@ createAutoComplete({
     rootElement: document.querySelector('#left-autocomplete'),
     onOptionSelect(movie) {
         document.querySelector('.tutorial').classList.add('is-hidden');  //hides the tutorial when an option is selected
-        onMovieSelect(movie, document.querySelector('#left-summary')); //second param determines where the summary should be rendered to
+        onMovieSelect(movie, document.querySelector('#left-summary'), 'left'); //second param determines where the summary should be rendered to
     }
 });
 
@@ -44,12 +44,14 @@ createAutoComplete({
     rootElement: document.querySelector('#right-autocomplete'),
     onOptionSelect(movie) {
         document.querySelector('.tutorial').classList.add('is-hidden');  //hides the tutorial when an option is selected
-        onMovieSelect(movie, document.querySelector('#right-summary'));  //second param determines where the summary should be rendered to
+        onMovieSelect(movie, document.querySelector('#right-summary'), 'right');  //second param determines where the summary should be rendered to
     },
 });
 
+let leftMovie, rightMovie; //stores detailed data for corresponding search result
+
 // send a followup request to the API and get details for the corresponding movie 
-const onMovieSelect = async (movie, summaryElement) => {
+const onMovieSelect = async (movie, summaryElement, side) => {
     const response = await axios.get("http://www.omdbapi.com/", {
         params: {
             apikey: "529ca8bc",
@@ -57,10 +59,30 @@ const onMovieSelect = async (movie, summaryElement) => {
         }
     });
     summaryElement.innerHTML = movieTemplate(response.data);
+    if(side === 'left') {
+        leftMovie = response.data;
+    } else {
+        rightMovie = response.data;
+    }
+    //running the comparison
+    if(leftMovie && rightMovie) {
+        runComparison();
+    }
 };
+
+// method for showing comparison results
+const runComparison = () => {
+    console.log('Compared!');
+}
 
 //HTML template for showing detailed info for any movie
 const movieTemplate = (movieDetails) => {
+    //extracting numbers from different properties of the movie to compare easily
+    const dollars = parseInt(movieDetails.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
+    const metascore = parseInt(movieDetails.Metascore);
+    const imdbRating = parseFloat(movieDetails.imdbRating);
+    const imdbVotes = parseInt(movieDetails.imdbVotes.replace(/,/g, ''));
+    console.log(dollars, metascore, imdbRating, imdbVotes);
     return `
     <article class="media">
         <figure class="media-left">
