@@ -72,17 +72,28 @@ const onMovieSelect = async (movie, summaryElement, side) => {
 
 // method for showing comparison results
 const runComparison = () => {
-    console.log('in comparison')
     //select all the elements containing the stats of the movie
     //all elements with id of left/right-summary with corresponding element of notification class
     const leftSideStat = document.querySelector('#left-summary').querySelectorAll('.notification');
     const rightSideStat = document.querySelector('#right-summary').querySelectorAll('.notification');
-    leftSideStat.forEach((leftStat, index) => {  //index is being used to access the corresponsing stat at the right side
-        const rightStat = rightSideStat[index];
+    leftSideStat.forEach((leftStat, index) => {
+        const rightStat = rightSideStat[index]; //index is being used to access the corresponsing stat at the right side
 
-        //dataset object is used to get a data attribute
-        const leftSideValue = leftStat.dataset.value;
+        //dataset object is used to get a data attribute, here dataset.value cause data-value attribute is used
+        const leftSideValue = leftStat.dataset.value; 
         const rightSideValue = rightStat.dataset.value;
+
+        //change the class for every stat that is not greater
+        if(leftSideValue > rightSideValue) {
+
+            rightStat.classList.remove('is-primary');
+            rightStat.classList.add('is-warning');
+        } else if(rightSideValue > leftSideValue) {
+            leftStat.classList.remove('is-primary');
+            leftStat.classList.add('is-warning');
+        } else {
+            return;
+        }
     });
 }
 
@@ -115,6 +126,7 @@ const movieTemplate = (movieDetails) => {
     //         counter = counter+ value;
     //     }
     // });
+    console.log(awards);
 
 
     /*The data-* attribute is used to store custom data private to the page or application.
